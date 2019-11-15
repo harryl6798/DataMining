@@ -1,5 +1,6 @@
 #DataMining Project
 import sys
+import copy
 # from collections import OrderedDict
 
 #Define default variables
@@ -35,6 +36,8 @@ def importData(file_name):
             line = edit_line
 
         editLine = line.split()
+        if not editLine:
+            continue
         data_input.append(editLine)
 
     
@@ -42,7 +45,6 @@ def importData(file_name):
 
 #Prepping the data for the input 
 def data_prep(attributes, data_input, num_attributes, num_row, MLEM2_order):
-
     #Get Data Per Attribute
     data_per_attribute = []
     for i in range(num_attributes):
@@ -80,38 +82,61 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
     
     # i = the decision attribute we are doing
     for i in decision_list:
-        CleanMLEM2 = MLEM2_order
+        CleanMLEM2 = copy.deepcopy(MLEM2_order)
+        #print(CleanMLEM2)
         elements = decision[i]
         finalList = []
+        
         while set(elements) != set(finalList):
-            similarValues = ""
+            sizeOfSet = 0
             numberOfMatchingRows = 0
             
+            current_best_match_attribute = -1
+            current_best_match_key = ""
+
+
             #Goes through the list of attributes and checks
             for x in range(num_attributes-1):
-                ElementList = CleanMLEM2[x]
+                ElementList = copy.deepcopy(CleanMLEM2[x])
+                # print(ElementList)
                 Dictionary_Column = list_dic[x]
+                
                 for key in ElementList:
+                    # print(key)
                     dictionary_value = Dictionary_Column[key]
                     check_if_larger = list(set(dictionary_value).intersection(set(elements)))
-
+                    # print(check_if_larger)
 
                     #Checks if the return is empty (If so... stop considering it)
                     if not check_if_larger:
                         CleanMLEM2[x].remove(key)
 
                     if numberOfMatchingRows <= len(check_if_larger):
+                        if sizeOfSet > len(dictionary_value) or sizeOfSet ==0 or numberOfMatchingRows < len(check_if_larger):
+                            sizeOfSet = len(dictionary_value)
+                            numberOfMatchingRows = len(check_if_larger)
+                            current_best_match_attribute = x
+                            current_best_match_key = key
+                        
 
 
                     
                     # print(key)
                     # print(dictionary_value)
-            #print(MLEM2_order)        
-            break
+            #print(CleanMLEM2)
+            #print(current_best_match_key)
+            if not finalList:
+                finalList = list_dic[current_best_match_attribute][current_best_match_key]
+            else:
+                finalList = list(set(finalList) & set(list_dic[current_best_match_attribute][current_best_match_key]))
+            CleanMLEM2[current_best_match_attribute].remove(current_best_match_key)
+            print(CleanMLEM2)
+            print(finalList)       
+            
 
 
 
-    return
+    return "sds"
 
 
 
