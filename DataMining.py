@@ -76,6 +76,7 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
 
     decision = list_dic[-1]
     decision_list = MLEM2_order[-1]
+    print(decision_list)
     #print(decision_list)
 
     rules =[]
@@ -85,8 +86,10 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
         CleanMLEM2 = copy.deepcopy(MLEM2_order)
         #print(CleanMLEM2)
         elements = decision[i]
+        perm_elements = decision[i]
         finalList = []
         rules_per_decision = []
+        Not_First_Rodeo = False
         
         while set(elements) != set(finalList):
             sizeOfSet = 0
@@ -128,8 +131,8 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
             #print(current_best_match_key)
 
             
-
-
+            
+            
             if not finalList:
                 finalList = list_dic[current_best_match_attribute][current_best_match_key]
                 rules_per_decision.append((current_best_match_attribute, current_best_match_key))
@@ -137,14 +140,24 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
                 finalList = list(set(finalList) & set(list_dic[current_best_match_attribute][current_best_match_key]))
                 rules_per_decision.append((current_best_match_attribute, current_best_match_key))
 
+            if Not_First_Rodeo:
+                if set(finalList).issubset(set(perm_elements)):
+                    break
+
             if set(finalList).issubset(set(elements)) and len(finalList) < len(elements):
-                print("Wow")
-                break
+                rules_per_decision.append("&")
+                diff = (list(set(elements) - set(finalList)))
+                CleanMLEM2 = copy.deepcopy(MLEM2_order)
+                #print(CleanMLEM2)
+                elements = diff
+                finalList = []
+                Not_First_Rodeo = True
+                continue
             CleanMLEM2[current_best_match_attribute].remove(current_best_match_key)
 
 
-            print(CleanMLEM2)
-            print(finalList)
+            # print(CleanMLEM2)
+            # print(finalList)
 
         rules.append(rules_per_decision)       
             
@@ -162,6 +175,7 @@ fileName = input()
 importData(fileName)
 print("What is the file you want to output to?")
 outputFile = input()
+
 num_attributes = len(attributes)
 num_row = len(data_input)
 dictionaries = data_prep(attributes, data_input, num_attributes, num_row, MLEM2_order)
