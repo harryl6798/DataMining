@@ -86,6 +86,7 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
         #print(CleanMLEM2)
         elements = decision[i]
         finalList = []
+        rules_per_decision = []
         
         while set(elements) != set(finalList):
             sizeOfSet = 0
@@ -125,17 +126,31 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
                     # print(dictionary_value)
             #print(CleanMLEM2)
             #print(current_best_match_key)
-            if not finalList:
-                finalList = list_dic[current_best_match_attribute][current_best_match_key]
-            else:
-                finalList = list(set(finalList) & set(list_dic[current_best_match_attribute][current_best_match_key]))
-            CleanMLEM2[current_best_match_attribute].remove(current_best_match_key)
-            print(CleanMLEM2)
-            print(finalList)       
+
             
 
 
+            if not finalList:
+                finalList = list_dic[current_best_match_attribute][current_best_match_key]
+                rules_per_decision.append((current_best_match_attribute, current_best_match_key))
+            else:
+                finalList = list(set(finalList) & set(list_dic[current_best_match_attribute][current_best_match_key]))
+                rules_per_decision.append((current_best_match_attribute, current_best_match_key))
 
+            if set(finalList).issubset(set(elements)) and len(finalList) < len(elements):
+                print("Wow")
+                break
+            CleanMLEM2[current_best_match_attribute].remove(current_best_match_key)
+
+
+            print(CleanMLEM2)
+            print(finalList)
+
+        rules.append(rules_per_decision)       
+            
+
+
+    print(rules)
     return "sds"
 
 
