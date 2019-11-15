@@ -11,12 +11,19 @@ num_attributes = 0
 num_row =0
 
 #Function for all of the data import
-def importData(file_name):
-    try:
-        open_file = open(file_name, "r")
-    except:
-        print("Couldn't find file name")
-        return
+def importData():
+    while True:
+        print("What is the file you want to import?")
+        fileName = input()
+        try:
+            open_file = open(fileName, "r")
+            break
+        except:
+            print("Couldn't find file name")
+            continue
+        else:
+            break
+            
 
         
     firstLine = open_file.readline()
@@ -41,7 +48,7 @@ def importData(file_name):
         data_input.append(editLine)
 
     
-    return file_name
+    return
 
 #Prepping the data for the input 
 def data_prep(attributes, data_input, num_attributes, num_row, MLEM2_order):
@@ -164,17 +171,14 @@ def MLEM2(list_dic, attributes, data_input, num_attributes, num_row, MLEM2_order
 
 
     print(rules)
-    return "sds"
+    return rules
 
 
 
 
 # Start of the file
-print("What is the file you want to import?")
-fileName = input()
-importData(fileName)
-print("What is the file you want to output to?")
-outputFile = input()
+importData()
+
 
 num_attributes = len(attributes)
 num_row = len(data_input)
@@ -182,7 +186,8 @@ dictionaries = data_prep(attributes, data_input, num_attributes, num_row, MLEM2_
 finalRules = MLEM2(dictionaries, attributes, data_input, num_attributes, num_row,MLEM2_order)
 
 
-
+print("What is the file you want to output to?")
+outputFile = input()
 
 
 
